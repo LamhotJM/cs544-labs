@@ -1,0 +1,14 @@
+
+When configuring Hibernate Session OR EntityManager[JPA], there is a DEVELOPMENT time
+convenience function to AUTO generate the DB tables from the Domain Classes.
+Here is an example:
+            <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+  The functon is intended to be a developer tool and not to facilitate any production level databases 
+ 
+ Here are the possible options:
+
+    validate: validate the schema, makes no changes to the database.
+    update: update the schema.
+    create: creates the schema, destroying previous data.
+    create-drop: drop the schema at the end of the session.
+
