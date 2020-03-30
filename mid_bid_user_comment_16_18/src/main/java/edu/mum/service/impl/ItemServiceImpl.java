@@ -1,0 +1,44 @@
+package edu.mum.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import edu.mum.dao.GenericDao;
+import edu.mum.dao.ItemDao;
+import edu.mum.domain.Item;
+import edu.mum.service.ItemService;
+
+@Service
+@Transactional
+public class ItemServiceImpl implements ItemService {
+
+	@Autowired
+	private ItemDao itemDao;
+
+	public void save(Item Item) {
+		itemDao.save(Item);
+	}
+
+	public void update(Item Item) {
+		itemDao.update(Item);
+	}
+
+	public List<Item> findAll() {
+		return (List<Item>) itemDao.findAll();
+	}
+
+	public Item findOne(Long id) {
+		return itemDao.findOne(id);
+	}
+
+	public List<Item> findBySubSelect() {
+		List<Item> items = (List<Item>) this.findAll();
+		// hydrate since LAZY load
+		items.get(0).getBids().get(0);
+		return items;
+	}
+
+}

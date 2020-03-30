@@ -1,17 +1,26 @@
 package edu.mum.domain;
 
 import javax.persistence.*;
+
+import org.hibernate.FetchMode;
+import org.hibernate.annotations.Fetch;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
 
-@NamedQuery(name = "Item.findBycategoryName", query = "select c.items from Category c where c.name = :categoryName ")
+/**
+ * An item for auction.
+ *
+ * @author Christian Bauer
+ */
+
 @Entity
 @Table(name = "ITEM")
-public class Item {
+public class Item implements Serializable {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue
 	@Column(name = "ITEM_ID")
 	private Long id = null;
 
@@ -21,23 +30,32 @@ public class Item {
 
 	@Column(name = "ITEM_NAME", length = 255, nullable = false, updatable = false)
 	private String name;
+	
+	private BigDecimal initialPrice;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinColumn(name = "itemSellerId")
-	private User seller;
+	@Column(name = "DESCRIPTION", length = 4000, nullable = false)
+	private String description = "";
+
+	private BigDecimal reservePrice;
+
+	//@Transient
+	@ManyToMany(fetch=FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE}, mappedBy="items")
+	private Set<Category> categories = new HashSet<Category>();
+
+	//@Transient
+	@OneToMany(fetch=FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+	List<Comment> comments;
 
 	@Transient
 	private User buyer;
 
-	@Column(name = "DESCRIPTION", length = 4000, nullable = false)
-	private String description;
+	
+	//here another additional code
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	private User seller;
 
-	private BigDecimal initialPrice;
-
-	private BigDecimal reservePrice;
-
-	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	private Set<Category> categories = new HashSet<Category>();
+	
 
 	@Transient
 	private User approvedBy;
@@ -50,16 +68,22 @@ public class Item {
 	private Collection<String> images = new ArrayList<String>();
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "CREATED", nullable = true, updatable = false)
+	@Column(name = "CREATED", nullable = false, updatable = false)
 	private Date created = new Date();
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "START_DATE", nullable = true, updatable = false)
-	private Date startDate;
+	@Column(name = "START_DATE", nullable = false, updatable = false)
+	private Date startDate = new Date();
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "END_DATE", nullable = true, updatable = false)
-	private Date endDate;
+	@Column(name = "END_DATE", nullable = false, updatable = false)
+	private Date endDate = new Date();
+
+	/**
+	 * No-arg constructor for JavaBean tools.
+	 */
+	public Item() {
+	}
 
 	// ********************** Accessor Methods ********************** //
 
@@ -73,10 +97,6 @@ public class Item {
 
 	public String getName() {
 		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public User getSeller() {
@@ -103,16 +123,8 @@ public class Item {
 		return initialPrice;
 	}
 
-	public void setInitialPrice(BigDecimal initialPrice) {
-		this.initialPrice = initialPrice;
-	}
-
 	public BigDecimal getReservePrice() {
 		return reservePrice;
-	}
-
-	public void setReservePrice(BigDecimal reservePrice) {
-		this.reservePrice = reservePrice;
 	}
 
 	public Date getStartDate() {
@@ -121,11 +133,6 @@ public class Item {
 
 	public Date getEndDate() {
 		return endDate;
-	}
-
-	public void addCategory(Category category) {
-		this.categories.add(category);
-		category.getItems().add(this);
 	}
 
 	public User getApprovedBy() {
@@ -149,18 +156,6 @@ public class Item {
 		return Collections.unmodifiableSet(categories);
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public void setSeller(User seller) {
-		this.seller = seller;
-	}
-
-	public void setCategories(Set<Category> categories) {
-		this.categories = categories;
-	}
-
 	public Collection<String> getImages() {
 		return images;
 	}
@@ -169,6 +164,57 @@ public class Item {
 		return created;
 	}
 
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setSeller(User seller) {
+		this.seller = seller;
+	}
+
+	public void setInitialPrice(BigDecimal initialPrice) {
+		this.initialPrice = initialPrice;
+	}
+
+	public void setReservePrice(BigDecimal reservePrice) {
+		this.reservePrice = reservePrice;
+	}
+
+	public void setCategories(Set<Category> categories) {
+		this.categories = categories;
+	}
+
+	public void setImages(Collection<String> images) {
+		this.images = images;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
 	// ********************** Common Methods ********************** //
 
 	public boolean equals(Object o) {
@@ -196,7 +242,7 @@ public class Item {
 
 	public String toString() {
 		return "Item ('" + getId() + "'), " + "Name: '" + getName() + "' " + "Initial Price: '" + getInitialPrice()
-				+ "'";
+				+ "bids " + getBids() ;
 	}
 
 	public int compareTo(Object o) {
@@ -206,6 +252,21 @@ public class Item {
 		}
 		return 0;
 	}
+	
+	// sub select
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
+	 private List<Bid> bids = new ArrayList<Bid>();
+
+	public List<Bid> getBids() {
+		return bids;
+	}
+
+	public void setBids(List<Bid> bids) {
+		this.bids = bids;
+	}
+
+	
 
 	// ********************** Business Methods ********************** //
 
