@@ -36,7 +36,6 @@ public class ItemServiceImpl implements ItemService {
 
 	public List<Item> findBySubSelect() {
 		List<Item> items = (List<Item>) this.findAll();
-		// hydrate since LAZY load
 		items.get(0).getBids().get(0);
 		return items;
 	}

@@ -22,6 +22,18 @@ public class TripDaoImpl extends GenericDaoImpl<Trip> implements TripDao {
 		super.setDaoType(Trip.class);
 	}
 
+	
+	
+	public List<Trip> findTripsbyDateAndPassengerCount(Integer passengerCount) {
+
+		Query query = entityManager
+				.createQuery("select t from Trip t, Booking  b, Passanger p where t.bookings = b and b member of p.bookings"
+						+ "and b.bookingDate = t.departureDate"
+						+ "and b.passengers.size > :passengerCount");
+		return (List<Trip>) query
+				.setParameter("passengerCount", passengerCount).getResultList();
+	}
+	
 	public List<Trip> findAllBatch() {
 		List<Trip> trips = (List<Trip>) this.findAll();
 		for (Trip trip : trips) {
@@ -32,5 +44,6 @@ public class TripDaoImpl extends GenericDaoImpl<Trip> implements TripDao {
 		return trips;
 
 	}
+
 
 }

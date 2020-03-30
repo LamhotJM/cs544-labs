@@ -10,4 +10,6 @@ public interface TripDao extends GenericDao<Trip> {
 	  
 	public List<Trip> findAllBatch();
 
+	public List<Trip> findTripsbyDateAndPassengerCount(Integer passengerCount);
+
  }

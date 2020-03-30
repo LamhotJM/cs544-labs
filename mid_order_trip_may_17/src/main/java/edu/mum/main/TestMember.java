@@ -56,8 +56,9 @@ public class TestMember {
 		trip.setDescription("trip desc");
 		trip.setDuration(23.0);
 		trip.setName("Lamhot Trip");
-		trip.setStartDate(cal.getTime());
-		trip.setEndDate(cal.getTime());
+		trip.setDepartureDate(cal.getTime());
+//		trip.setStartDate(cal.getTime());
+//		trip.setEndDate(cal.getTime());
 		trip.setFund(fund);
 		trip.setPayments(payments);
 		

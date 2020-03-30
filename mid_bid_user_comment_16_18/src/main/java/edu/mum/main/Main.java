@@ -58,7 +58,7 @@ public class Main {
 
 		System.out.println("Find by Sub select .. " + itemService.findBySubSelect());
 		
-		System.out.println("FindBySoldItemInitialPrice  email .." + userSold);
+	//	System.out.println("FindBySoldItemInitialPrice  email .." + userSold);
 
 	}
 

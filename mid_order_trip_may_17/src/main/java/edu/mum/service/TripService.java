@@ -13,6 +13,8 @@ public interface TripService {
 
 	public List<Trip> findAllBatch();
 	
+	public List<Trip> findTripsbyDateAndPassengerCount(Integer passengerCount);
+	
 	public void save(Trip trip);
 	
 	public void update(Trip trip);

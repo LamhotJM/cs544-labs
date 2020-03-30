@@ -44,5 +44,13 @@ public class TripServiceImpl implements TripService {
 		 tripDao.update(trip);
 		
 	}
+
+	@Override
+	public List<Trip> findTripsbyDateAndPassengerCount(Integer passengerCount) {
+		// TODO Auto-generated method stub
+		return tripDao.findTripsbyDateAndPassengerCount(passengerCount);
+	}
+	
+	
  
 }
