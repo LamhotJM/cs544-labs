@@ -14,37 +14,57 @@ public class Groups {
 
 	@Autowired
 	GroupService groupService;
-	
+
 	@Autowired
 	UserCredentialsService userCredentialsService;
-	
- 	public void addGroups() {
-	
- 	   // Create ADMIN Group
 
+	public void addGroups() {
 
-    // Create SUPERVISOR Group
+		// Create ADMIN Group
 
+		Group groupAdmin = new Group();
+		groupAdmin.setGroup_name("ADMIN");
 
-	    
- 	    // Add LIST to both groups
+		// Create SUPERVISOR Group
 
- 	    
-	    //Add READ to both Groups
+		Group groupSuper = new Group();
+		groupSuper.setGroup_name("ADMIN");
 
+		// Add LIST to both groups
+		Authority authority = new Authority();
+		authority.setAuthority("LIST");
+		groupAdmin.getAuthority().add(authority);
+		groupSuper.getAuthority().add(authority);
 
- 		
-	    //Add Update to Super only
- 
+		// Add READ to both Groups
 
- 	   // Add users to groups
-  	
- 	   
- 	   // Save groups
- 	    groupService.save(groupAdmin);
- 	    groupService.update(groupSuper);
+		authority = new Authority();
+		authority.setAuthority("READ");
+		groupAdmin.getAuthority().add(authority);
+		groupSuper.getAuthority().add(authority);
 
+		// Add Update to Super only
 
+		authority = new Authority();
+		authority.setAuthority("UPDATE");
+		groupSuper.getAuthority().add(authority);
+
+		// Add Create to Admin only
+		authority = new Authority();
+		authority.setAuthority("CREATE");
+		groupAdmin.getAuthority().add(authority);
+
+		// Add users to groups
+
+		UserCredentials seanUserCredentials = userCredentialsService.findByUserName("Sean");
+		groupAdmin.getUserCredentials().add(seanUserCredentials);
+
+		UserCredentials paulUserCredentials = userCredentialsService.findByUserName("Paul");
+		groupSuper.getUserCredentials().add(paulUserCredentials);
+
+		// Save groups
+		groupService.save(groupAdmin);
+		groupService.update(groupSuper);
 
 	}
 }

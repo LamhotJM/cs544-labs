@@ -80,6 +80,10 @@ public class LoginController {
         	//TODO: add Authentication
             
             // - End of TO DO
+        	
+        	Authentication request = new UsernamePasswordAuthenticationToken(userName, passWord);
+            Authentication result = authenticationManager.authenticate(request);
+            SecurityContextHolder.getContext().setAuthentication(result);
             
             
             Stage stage=(Stage) username.getScene().getWindow();
