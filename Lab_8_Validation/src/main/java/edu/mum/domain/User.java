@@ -17,46 +17,57 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import edu.mum.validation.groups.Details;
 
 @Entity
 @Table(name = "USERS")
- public class User implements Serializable  {
+public class User implements Serializable {
 
-    @Id @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "USER_ID")
-    private Long id = null;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "USER_ID")
+	private Long id = null;
 
+	@NotEmpty
+	@Size(min = 4, max = 19, message = "{Size.name}")
+	// @Column(name = "FIRSTNAME", nullable = false)
+	private String firstName;
 
-    @Column(name = "FIRSTNAME", nullable = false)
-    private String firstName;
+	// @Column(name = "LASTNAME", nullable = false)
+	@NotEmpty
+	@Size(min = 4, max = 19, message = "{Size.name}")
+	private String lastName;
 
+//    @Column(name = "EMAIL", nullable = false)
+	@Email(message = "{Email}", groups = { Details.class })
+	private String email;
 
-    @Column(name = "LASTNAME", nullable = false)
-    private String lastName;
+	// @Column(name = "RATING", nullable = false)
+	@NotNull
+	@Min(value = 8, message = "{minNumber}", groups = { Details.class })
+	private Integer rating = 0;
 
+	@Column(name = "IS_ADMIN", nullable = false)
+	private boolean admin = false;
 
-    @Column(name = "EMAIL", nullable = false)
-    private String email;
-
- 
-    @Column(name = "RATING", nullable = false)
-    private Integer rating = 0;
-
-    @Column(name = "IS_ADMIN", nullable = false)
-    private boolean admin = false;
-
-	@OneToOne(fetch=FetchType.LAZY,  cascade = CascadeType.ALL) 
-	@JoinColumn(name="userId") 
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "userId")
 	private UserCredentials userCredentials;
 
-    
-	   @OneToMany(fetch=FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE}, mappedBy="user")
-	     private List<Address> addresses = new ArrayList<Address>();
+	@Valid
+	@OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "user")
+	private List<Address> addresses = new ArrayList<Address>();
 
-
-	    @OneToMany(fetch=FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE})
-	    private Set<Item> boughtItems = new HashSet<Item>();
-
+	@OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	private Set<Item> boughtItems = new HashSet<Item>();
 
 	public Long getId() {
 		return id;
@@ -129,7 +140,7 @@ import javax.persistence.Table;
 	public void setBoughtItems(Set<Item> boughtItems) {
 		this.boughtItems = boughtItems;
 	}
-	
+
 	public void addBoughtItem(Item boughtItem) {
 		this.boughtItems.add(boughtItem);
 	}
