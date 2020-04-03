@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
+import javax.validation.groups.Default;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +18,7 @@ import edu.mum.domain.User;
 import edu.mum.exception.ValidationException;
 import edu.mum.exception.ValidationExceptionGroup;
 import edu.mum.validation.ServiceValidation;
+import edu.mum.validation.groups.Details;
 
 @Service
 @Transactional 
@@ -25,9 +27,13 @@ public class UserServiceImpl implements edu.mum.service.UserService {
  	@Autowired
 	private UserDao userDao;
 
- 	@PreAuthorize("hasAuthority('CREATE')")
+ 	@PreAuthorize("hasRole('ROLE_ADMIN')")
+ 	//@PreAuthorize("hasAuthority('CREATE')")
      public void save( User user) {  		
-  		userDao.save(user);
+ 		Boolean isValidated = validate(user, Default.class);
+
+ 		if (isValidated)
+ 			userDao.save(user);
  	}
   	
   	
@@ -42,7 +48,12 @@ public class UserServiceImpl implements edu.mum.service.UserService {
 	
 	@PreAuthorize("hasAuthority('UPDATE')")
   	public User update(User user) {
-		 return userDao.update(user);
+		Boolean isValidated = validate(user, Details.class);
+
+ 		if (isValidated)
+ 			return userDao.update(user);
+ 		else
+ 			return user;
 
 	}
 
