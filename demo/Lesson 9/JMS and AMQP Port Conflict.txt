@@ -1,0 +1,7 @@
+port conflict issue between AMQP and JMS:
+
+go to activemq\conf folder
+open activemq.xml file and search for:
+"<transportConnector name="amqp" uri="amqp://0.0.0.0:5672?"
+
+Change the port #: 5672 to another number, for example 5000
