@@ -6,7 +6,8 @@ public class ItemListener {
 
 	public void listen(Item item) {
 		String name = item.getName();
-		System.out.println("---------- Direct consumer for Item: " + name);
+		String desc = item.getDescription();
+		System.out.println("---------- Direct consumer for Item: " + name + " desc" + desc);
 	}
 
 }
