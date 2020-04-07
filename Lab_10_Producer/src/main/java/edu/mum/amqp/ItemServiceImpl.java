@@ -8,13 +8,11 @@ public class ItemServiceImpl implements ItemService {
 	
 	@Override
 	public void publish(RabbitTemplate rabbitTemplate) {
-		// TODO Auto-generated method stub
-		Item item1 = new Item("Kazoo", "kazoo desc...");
-		Item item2 = new Item("Hammer", "hammer desc...");
-		
+		Item item1 = new Item("Kazoo", 50);
+		Item item2 = new Item("Hammer", 10);
+
 		rabbitTemplate.convertAndSend(item1);
 		rabbitTemplate.convertAndSend(item2);
 	}
-
 
 }
